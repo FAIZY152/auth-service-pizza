@@ -1,3 +1,4 @@
+import { Roles } from './../../src/constants/index';
 import 'reflect-metadata';
 import { AppDataSource } from './../../src/config/data-source';
 import { User } from './../../src/entity/User';
@@ -72,6 +73,41 @@ describe('POST  /auth/register', () => {
       // expect(users[0].firstName).toBe(userData.firstName);
       // expect(users[0].lastName).toBe(userData.lastName);
       // expect(users[0].email).toBe(userData.email);
+    });
+    it('should return an id of the created user', async () => {
+      // Arrange
+      const userData = {
+        firstName: 'Muhammad',
+        lastName: 'Ali',
+        email: 'ali@gmail.com',
+        password: 'password',
+      };
+      // Act
+      const response = await request(app).post('/auth/register').send(userData);
+
+      // Assert
+      expect(response.body).toHaveProperty('id');
+      const repository = connection.getRepository(User);
+      const users = await repository.find();
+      expect((response.body as Record<string, string>).id).toBe(users[0].id);
+    });
+
+    it('should assign a customer role', async () => {
+      // Arrange
+      const userData = {
+        firstName: 'Muhammad',
+        lastName: 'Ali',
+        email: 'ali@gmail.com',
+        password: 'password',
+      };
+      // Act
+      await request(app).post('/auth/register').send(userData);
+
+      // Assert
+      const userRepository = connection.getRepository(User);
+      const users = await userRepository.find();
+      expect(users[0]).toHaveProperty('role');
+      expect(users[0].role).toBe(Roles.CUSTOMER);
     });
   });
 

@@ -1,18 +1,9 @@
-// import { DataSource, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
-// export const truncateTables = async (connection: DataSource) => {
-//   const entities = connection.entityMetadatas;
-//   for (const entity of entities) {
-//     const repository = connection.getRepository(entity.name);
-//     await repository.clear();
-//   }
-// };
-import { DataSource, createConnection } from 'typeorm';
-
-async function setupDatabase() {
-    const connection = await createConnection();
-    await connection.synchronize();
-    await connection.runMigrations();
-}
-
-setupDatabase().catch(error => console.error('Database setup failed:', error));
+export const truncateTables = async (connection: DataSource) => {
+  const entities = connection.entityMetadatas;
+  for (const entity of entities) {
+    const repository = connection.getRepository(entity.name);
+    await repository.clear();
+  }
+};
