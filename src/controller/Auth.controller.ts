@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator';
 import { AppDataSource } from '../config/data-source';
 import Logger from '../config/Logger';
 import { Roles } from '../constants';
@@ -22,8 +23,12 @@ export const Register = async (
   res: Response,
   next: NextFunction,
 ): Promise<any> => {
+  // Validation
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(400).json({ errors: result.array() });
+  }
   const { firstName, lastName, email, password } = req.body;
-
   Logger.debug('New request to register a user', {
     firstName,
     lastName,
@@ -42,7 +47,10 @@ export const Register = async (
       message: 'User registered successfully',
       id: user.id,
     });
-  } catch (error) {
-    throw error;
+  } catch (error: any) {
+    if (error.status === 400) {
+      return res.status(400).json({ message: error.message });
+    }
+    next(error);
   }
 };
