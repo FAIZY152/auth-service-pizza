@@ -13,6 +13,7 @@ import {
   generateRefreshToken,
   persistRefreshToken,
 } from '../services/Token.service';
+import { RefreshToken } from '../entity/RefreshToken';
 
 interface UserData {
   firstName: string;
@@ -50,6 +51,7 @@ export const Register = async (
       password,
       role: Roles.CUSTOMER,
     });
+
     const payload: JwtPayload = {
       sub: String(user.id),
       role: user.role,
@@ -61,7 +63,12 @@ export const Register = async (
     const accessToken = await generateAccessToken(payload);
 
     // Persist the refresh token
-    const newRefreshToken = await persistRefreshToken(user);
+    let refreshTokenRepository = AppDataSource.getRepository(RefreshToken);
+
+    const newRefreshToken = await persistRefreshToken(
+      refreshTokenRepository,
+      user,
+    );
 
     const refreshToken = await generateRefreshToken({
       ...payload,
@@ -75,7 +82,6 @@ export const Register = async (
     });
 
     res.cookie('refreshToken', refreshToken, {
-      domain: Config.MAIN_DOMAIN,
       sameSite: 'strict',
       maxAge: 1000 * 60 * 60 * 24 * 365, // 1y
       httpOnly: true, // Very important
