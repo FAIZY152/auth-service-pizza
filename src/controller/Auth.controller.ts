@@ -6,6 +6,13 @@ import { User } from '../entity/User';
 import { RegisterService } from '../services/User.service';
 import AsyncHandler from '../utils/TryCatch';
 import { Request, Response, NextFunction } from 'express';
+import { Config } from '../config/fileImport';
+import { JwtPayload } from 'jsonwebtoken';
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  persistRefreshToken,
+} from '../services/Token.service';
 
 interface UserData {
   firstName: string;
@@ -43,10 +50,38 @@ export const Register = async (
       password,
       role: Roles.CUSTOMER,
     });
-    return res.status(201).json({
-      message: 'User registered successfully',
-      id: user.id,
+    const payload: JwtPayload = {
+      sub: String(user.id),
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+    };
+
+    const accessToken = await generateAccessToken(payload);
+
+    // Persist the refresh token
+    const newRefreshToken = await persistRefreshToken(user);
+
+    const refreshToken = await generateRefreshToken({
+      ...payload,
+      id: String(newRefreshToken.id),
     });
+
+    res.cookie('accessToken', accessToken, {
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60 * 24 * 1, // 1d
+      httpOnly: true, // Very important
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      domain: Config.MAIN_DOMAIN,
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60 * 24 * 365, // 1y
+      httpOnly: true, // Very important
+    });
+
+    res.status(201).json({ id: user.id });
   } catch (error: any) {
     if (error.status === 400) {
       return res.status(400).json({ message: error.message });
