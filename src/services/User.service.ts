@@ -34,3 +34,25 @@ export const RegisterService = async ({
   });
   return user;
 };
+
+export const LoginService = async (email: string, password: string) => {
+  try {
+    const userRepository = AppDataSource.getRepository(User);
+    const user = await userRepository.findOneBy({ email });
+
+    if (!user) {
+      const err = createHttpError(400, 'Invalid credentials');
+      throw err;
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      const err = createHttpError(400, 'Invalid credentials');
+      throw err;
+    }
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
