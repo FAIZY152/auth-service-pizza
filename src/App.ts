@@ -3,10 +3,12 @@ import 'reflect-metadata';
 import express, { NextFunction, Request, Response } from 'express';
 import createHttpError, { HttpError } from 'http-errors';
 import userRouter from './routes/Auth.routes';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Routes
 app.get('/', (req, res, next) => {

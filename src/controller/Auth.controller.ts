@@ -18,7 +18,7 @@ import {
   persistRefreshToken,
 } from '../services/Token.service';
 import { RefreshToken } from '../entity/RefreshToken';
-import { UserData } from '../types';
+import { AuthRequest, UserData } from '../types';
 
 interface RequestBody extends Request {
   body: UserData;
@@ -154,12 +154,13 @@ export const Login = async (
 };
 
 export const GetProfile = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction,
-): Promise<any> => {
+) => {
   try {
-    const user = await FindById(Number(req.auth?.id));
+    console.log('User Authenticated: ', req.auth);
+    const user = await FindById(Number(req.auth?.sub));
     res.json({ ...user, password: undefined });
   } catch (error) {
     next(error);
