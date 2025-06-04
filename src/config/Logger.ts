@@ -4,15 +4,13 @@ import { Config } from './fileImport';
 const Logger = winston.createLogger({
   level: 'info',
   defaultMeta: { service: 'auth-service' },
+  format: winston.format.combine(
+    winston.format.json(),
+    winston.format.timestamp(),
+  ),
   transports: [
     new winston.transports.Console({
       level: 'info',
-      format: winston.format.combine(
-        // winston.format.colorize(),
-        // winston.format.simple(),
-        winston.format.json(),
-        winston.format.timestamp(),
-      ),
       silent: Config.NODE_ENV === 'test',
     }),
 

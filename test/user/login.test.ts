@@ -68,5 +68,32 @@ describe('POST  /auth/login', () => {
       expect(isJwt(accessToken)).toBeTruthy();
       expect(isJwt(refreshToken)).toBeTruthy();
     });
+    it('should return the 400 if email or password is wrong', async () => {
+      // Arrange
+      const userData = {
+        firstName: 'Rakesh',
+        lastName: 'K',
+        email: 'rakesh@mern.space',
+        password: 'password',
+      };
+
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+      const userRepository = connection.getRepository(User);
+      await userRepository.save({
+        ...userData,
+        password: hashedPassword,
+        role: Roles.CUSTOMER,
+      });
+
+      // Act
+      const response = await request(app)
+        .post('/auth/login')
+        .send({ email: userData.email, password: 'wrongPassword' });
+
+      // Assert
+
+      expect(response.statusCode).toBe(400);
+    });
   });
 });

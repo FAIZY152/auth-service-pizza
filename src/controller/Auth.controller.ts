@@ -154,3 +154,15 @@ export const Login = async (
     next(error);
   }
 };
+
+export const GetProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<any> => {
+  try {
+    res.json({});
+  } catch (error) {
+    next(error);
+  }
+};
