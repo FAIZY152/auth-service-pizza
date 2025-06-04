@@ -10,10 +10,12 @@ import createJWKSMock from 'mock-jwks';
 
 describe('GET /auth/self', () => {
   let connection: DataSource;
+  const jwksUrl = 'http://localhost:5501';
+
   let jwks: ReturnType<typeof createJWKSMock>;
 
   beforeAll(async () => {
-    jwks = createJWKSMock('http://localhost:5501');
+    jwks = createJWKSMock(jwksUrl);
     connection = await AppDataSource.initialize();
   });
 
@@ -32,11 +34,45 @@ describe('GET /auth/self', () => {
   });
 
   describe('Given all fields ', () => {
-    it("should return the user's details", async () => {
-      const response = await request(app).get('/auth/self');
-
-      // Assert
+    it('should return the 200 status code', async () => {
+      const accessToken = jwks.token({
+        sub: '1',
+        role: Roles.CUSTOMER,
+      });
+      const response = await request(app)
+        .get('/auth/self')
+        .set('Cookie', [`accessToken=${accessToken}`])
+        .send();
       expect(response.statusCode).toBe(200);
+    });
+
+    it('should return the user data', async () => {
+      // Register user
+      const userData = {
+        firstName: 'Muhammad',
+        lastName: 'Ali',
+        email: 'ali@gmail.com',
+        password: 'password',
+      };
+      const userRepository = connection.getRepository(User);
+      const data = await userRepository.save({
+        ...userData,
+        role: Roles.CUSTOMER,
+      });
+      // Generate token
+      const accessToken = jwks.token({
+        sub: String(data.id),
+        role: data.role,
+      });
+
+      // Add token to cookie
+      const response = await request(app)
+        .get('/auth/self')
+        .set('Cookie', [`accessToken=${accessToken};`])
+        .send();
+      // Assert
+      // Check if user id matches with registered user
+      expect((response.body as Record<string, string>).id).toBe(data.id);
     });
   });
 });

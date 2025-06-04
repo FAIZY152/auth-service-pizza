@@ -56,3 +56,22 @@ export const LoginService = async (email: string, password: string) => {
     throw error;
   }
 };
+
+export const FindById = async (id: number) => {
+  const userRepository = AppDataSource.getRepository(User);
+  const user = await userRepository.findOneBy({ id });
+  if (!user) {
+    const err = createHttpError(404, 'User not found');
+    throw err;
+  }
+  return user;
+};
+export const FindByEmail = async (email: string) => {
+  const userRepository = AppDataSource.getRepository(User);
+  const user = await userRepository.findOneBy({ email });
+  if (!user) {
+    const err = createHttpError(404, 'User not found');
+    throw err;
+  }
+  return user;
+};

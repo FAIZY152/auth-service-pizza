@@ -3,7 +3,11 @@ import { AppDataSource } from '../config/data-source';
 import Logger from '../config/Logger';
 import { Roles } from '../constants';
 import { User } from '../entity/User';
-import { LoginService, RegisterService } from '../services/User.service';
+import {
+  FindById,
+  LoginService,
+  RegisterService,
+} from '../services/User.service';
 import AsyncHandler from '../utils/TryCatch';
 import { Request, Response, NextFunction } from 'express';
 import { Config } from '../config/fileImport';
@@ -14,13 +18,7 @@ import {
   persistRefreshToken,
 } from '../services/Token.service';
 import { RefreshToken } from '../entity/RefreshToken';
-
-interface UserData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-}
+import { UserData } from '../types';
 
 interface RequestBody extends Request {
   body: UserData;
@@ -161,7 +159,8 @@ export const GetProfile = async (
   next: NextFunction,
 ): Promise<any> => {
   try {
-    res.json({});
+    const user = await FindById(Number(req.auth?.id));
+    res.json({ ...user, password: undefined });
   } catch (error) {
     next(error);
   }
