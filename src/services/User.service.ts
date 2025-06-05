@@ -75,3 +75,14 @@ export const FindByEmail = async (email: string) => {
   }
   return user;
 };
+
+export const deleteRefreshToken = async (tokenId: number) => {
+  try {
+    const refreshTokenRepository = AppDataSource.getRepository(User);
+    const result = await refreshTokenRepository.delete({ id: tokenId });
+    return result;
+  } catch (error) {
+    const err = createHttpError(500, 'Error deleting refresh token');
+    throw err;
+  }
+};

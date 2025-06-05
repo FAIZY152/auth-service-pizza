@@ -9,7 +9,10 @@
       "fix": "prettier . --write",
       "format": "prettier . --check",
       "test": "jest --watch --runInBand",
-      "typeorm": "typeorm-ts-node-commonjs"
+    "migration:generate": "typeorm-ts-node-commonjs migration:generate --esm -d src/config/data-source.ts",
+   "migration:run": "typeorm-ts-node-commonjs migration:run -d src/config/data-source.ts"
+
+
    },
    "keywords": [],
    "author": "",

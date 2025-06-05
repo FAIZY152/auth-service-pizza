@@ -2,6 +2,7 @@ import express from 'express';
 import {
   GetProfile,
   Login,
+  Logout,
   Refresh,
   Register,
 } from '../controller/Auth.controller';
@@ -18,5 +19,6 @@ userRouter.post('/register', registerValidator, Register);
 userRouter.post('/login', loginValidator, Login);
 userRouter.get('/self', isAuthenticate, GetProfile);
 userRouter.post('/refresh-token', checkRefreshToken, Refresh);
-    
+userRouter.post('/logout', isAuthenticate, IsRefreshToken, Logout);
+
 export default userRouter;
