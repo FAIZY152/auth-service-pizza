@@ -28,7 +28,7 @@ app.use('/tenants', tenateRouter);
 // middleware
 
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
-  const statusCode = err.status || 500;
+  const statusCode = err.status || err.statusCode || 500;
   res.status(statusCode).json({
     errors: [
       {

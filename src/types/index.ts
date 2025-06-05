@@ -23,3 +23,12 @@ export interface AuthRequest extends Request {
     id?: string;
   };
 }
+
+export interface ITenate {
+  name: string;
+  address: string;
+}
+
+export interface TenateRequest extends Request {
+  body: ITenate;
+}

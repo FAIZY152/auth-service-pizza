@@ -2,9 +2,7 @@ import { DataSource } from 'typeorm';
 import { AppDataSource } from '../../src/config/data-source';
 import request from 'supertest';
 import bcrypt from 'bcrypt';
-import { User } from '../../src/entity/User';
-import { isJwt } from '../utils';
-import app from '../../src/App';
+
 import { Roles } from '../../src/constants';
 import createJWKSMock from 'mock-jwks';
 
@@ -45,7 +43,6 @@ describe('GET /auth/self', () => {
     //     .send();
     //   expect(response.statusCode).toBe(200);
     // });
-
     // it('should return the user data', async () => {
     //   // Register user
     //   const userData = {
@@ -64,7 +61,6 @@ describe('GET /auth/self', () => {
     //     sub: String(data.id),
     //     role: data.role,
     //   });
-
     //   // Add token to cookie
     //   const response = await request(app)
     //     .get('/auth/self')
