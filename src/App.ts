@@ -4,6 +4,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import createHttpError, { HttpError } from 'http-errors';
 import userRouter from './routes/Auth.routes';
 import cookieParser from 'cookie-parser';
+import tenateRouter from './routes/Tenate.routes';
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.get('/', (req, res, next) => {
 });
 
 app.use('/auth', userRouter);
+app.use('/tenants', tenateRouter);
 
 // middleware
 

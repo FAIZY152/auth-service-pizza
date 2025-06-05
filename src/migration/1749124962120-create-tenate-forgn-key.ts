@@ -12,5 +12,4 @@ export class CreateTenateForgnKey1749124962120 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "user" DROP CONSTRAINT "FK_685bf353c85f23b6f848e4dcded"`);
         await queryRunner.query(`ALTER TABLE "user" DROP COLUMN "tenantId"`);
     }
-
 }
