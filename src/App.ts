@@ -6,6 +6,8 @@ import userRouter from './routes/Auth.routes';
 import cookieParser from 'cookie-parser';
 
 const app = express();
+
+app.use(express.static('public')); // Serve static files from the 'public'
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

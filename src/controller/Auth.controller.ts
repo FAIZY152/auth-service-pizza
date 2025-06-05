@@ -166,3 +166,12 @@ export const GetProfile = async (
     next(error);
   }
 };
+
+export const Refresh = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+  } catch (error) {}
+};

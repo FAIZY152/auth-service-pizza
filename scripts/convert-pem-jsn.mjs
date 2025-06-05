@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const privateKey = fs.readFileSync(
-  path.join(__dirname, '../../keys/private.pem'),
+  path.join(__dirname, '../keys/private.pem'),
   'utf8',
 );
 

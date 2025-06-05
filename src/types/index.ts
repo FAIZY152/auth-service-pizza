@@ -12,6 +12,9 @@ export type UserData = {
   password: string;
   role?: string; // Optional, default to 'CUSTOMER'
 };
+export interface IRefreshTokenPayload {
+  id: string;
+}
 
 export interface AuthRequest extends Request {
   auth: {
