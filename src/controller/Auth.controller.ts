@@ -173,5 +173,6 @@ export const Refresh = async (
   next: NextFunction,
 ) => {
   try {
+    res.json({});
   } catch (error) {}
 };

@@ -27,9 +27,6 @@ export default expressjwt({
   async isRevoked(req: JWTRequest, token): Promise<boolean> {
     const payload = token?.payload as IRefreshTokenPayload;
 
-    console.log('Token', token);
-    console.log('Payload', payload);
-
     try {
       const refreshTokenRepo = AppDataSource.getRepository(RefreshToken);
 
