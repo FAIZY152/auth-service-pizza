@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import {
   AddTenate,
-  GetTenateById,
+  GetById,
   GetTenates,
-  UpdateTenate,
+  Update,
 } from '../services/Tenate.service';
 import { TenateRequest } from '../types';
 import Logger from '../config/Logger';
@@ -72,7 +72,7 @@ export const getTenateById = async (
   }
 
   try {
-    const tenant = await GetTenateById(Number(tenantId));
+    const tenant = await GetById(Number(tenantId));
 
     if (!tenant) {
       next(createHttpError(400, 'Tenant does not exist.'));
@@ -108,7 +108,7 @@ export const updateTenate = async (
   Logger.debug('Request for updating a tenant', req.body);
 
   try {
-    await UpdateTenate(Number(tenantId), {
+    await Update(Number(tenantId), {
       name,
       address,
     });

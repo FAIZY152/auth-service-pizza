@@ -1,5 +1,9 @@
-import express from 'express';
-import { createTenate } from '../controller/Tenate.controller';
+import express, { Router } from 'express';
+import {
+  createTenate,
+  getTenateById,
+  updateTenate,
+} from '../controller/Tenate.controller';
 import isAuthenticate from '../middleware/isAuthenticate';
 import { canAccess } from '../middleware/canAccess';
 import { Roles } from '../constants';
@@ -14,11 +18,18 @@ tenateRouter.post(
   validateCreateTenate,
   createTenate,
 );
-
-tenateRouter.get(
-  '/get-tenates',
+tenateRouter.patch(
+  '/update/:id',
   isAuthenticate,
   canAccess([Roles.ADMIN]),
- GetTenates) 
+  validateCreateTenate,
+  updateTenate,
+);
 
+tenateRouter.get(
+  '/get-tenate/:id',
+  isAuthenticate,
+  canAccess([Roles.ADMIN]),
+  getTenateById,
+);
 export default tenateRouter;

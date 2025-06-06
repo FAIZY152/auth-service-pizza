@@ -22,7 +22,7 @@ export const GetTenates = async () => {
   }
 };
 
-export const GetTenateById = async (id: number) => {
+export const GetById = async (id: number) => {
   try {
     const tenateRepo = AppDataSource.getRepository(Tenant);
     return await tenateRepo.findOneBy({ id });
@@ -31,11 +31,11 @@ export const GetTenateById = async (id: number) => {
   }
 };
 
-export const UpdateTenate = async (id: number, tenateData: ITenate) => {
+export const Update = async (id: number, tenateData: ITenate) => {
   try {
     const tenateRepo = AppDataSource.getRepository(Tenant);
     await tenateRepo.update(id, tenateData);
-    return await GetTenateById(id);
+    return await GetById(id);
   } catch (error) {
     throw new Error('Error updating tenant: ' + error.message);
   }
