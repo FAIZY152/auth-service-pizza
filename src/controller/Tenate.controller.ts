@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { AddTenate } from '../services/Tenate.service';
 import { TenateRequest } from '../types';
 import Logger from '../config/Logger';
+import { validationResult } from 'express-validator';
 
 export const createTenate = async (
   req: TenateRequest,
@@ -9,6 +10,11 @@ export const createTenate = async (
   next: NextFunction,
 ): Promise<any> => {
   try {
+    // Validation
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).json({ errors: result.array() });
+    }
     const { name, address } = req.body;
     const tenate = await AddTenate({ name, address });
     Logger.info('Creating Tenate', {
