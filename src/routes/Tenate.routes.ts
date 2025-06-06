@@ -32,4 +32,7 @@ tenateRouter.get(
   canAccess([Roles.ADMIN]),
   getTenateById,
 );
+
+
+tenateRouter.delete('/delete-tenate/:id', isAuthenticate, canAccess([Roles.ADMIN]),deleteTenate);
 export default tenateRouter;

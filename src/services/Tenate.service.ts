@@ -40,3 +40,13 @@ export const Update = async (id: number, tenateData: ITenate) => {
     throw new Error('Error updating tenant: ' + error.message);
   }
 };
+
+export const DeleteT = async (id: number) => {
+  try {
+    const tenateRepo = AppDataSource.getRepository(Tenant);
+    const tenant = await tenateRepo.delete(id);
+    return tenant;
+  } catch (error) {
+    throw new Error('Error deleting tenant: ' + error.message);
+  }
+};

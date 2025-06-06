@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import {
   AddTenate,
+  DeleteT,
   GetById,
   GetTenates,
   Update,
@@ -116,6 +117,29 @@ export const updateTenate = async (
     Logger.info('Tenant has been updated', { id: tenantId });
 
     res.json({ id: Number(tenantId) });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteTenate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const tenantId = req.params.id;
+
+  if (isNaN(Number(tenantId))) {
+    next(createHttpError(400, 'Invalid url param.'));
+    return;
+  }
+
+  try {
+    await DeleteT(Number(tenantId));
+    Logger.info('Tenant has been deleted', { id: tenantId });
+    res.status(204).send({
+      message: 'Tenant deleted successfully',
+    });
   } catch (err) {
     next(err);
   }
