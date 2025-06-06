@@ -21,3 +21,22 @@ export const GetTenates = async () => {
     throw new Error('Error fetching tenants: ' + error.message);
   }
 };
+
+export const GetTenateById = async (id: number) => {
+  try {
+    const tenateRepo = AppDataSource.getRepository(Tenant);
+    return await tenateRepo.findOneBy({ id });
+  } catch (error) {
+    throw new Error('Error fetching tenant by ID: ' + error.message);
+  }
+};
+
+export const UpdateTenate = async (id: number, tenateData: ITenate) => {
+  try {
+    const tenateRepo = AppDataSource.getRepository(Tenant);
+    await tenateRepo.update(id, tenateData);
+    return await GetTenateById(id);
+  } catch (error) {
+    throw new Error('Error updating tenant: ' + error.message);
+  }
+};

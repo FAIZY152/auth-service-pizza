@@ -1,8 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import { AddTenate, GetTenates } from '../services/Tenate.service';
+import {
+  AddTenate,
+  GetTenateById,
+  GetTenates,
+  UpdateTenate,
+} from '../services/Tenate.service';
 import { TenateRequest } from '../types';
 import Logger from '../config/Logger';
 import { validationResult } from 'express-validator';
+import createHttpError from 'http-errors';
 
 export const createTenate = async (
   req: TenateRequest,
@@ -50,5 +56,67 @@ export const getTenates = async (
   } catch (error) {
     Logger.error('Error fetching Tenates', error);
     next(error);
+  }
+};
+
+export const getTenateById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const tenantId = req.params.id;
+
+  if (isNaN(Number(tenantId))) {
+    next(createHttpError(400, 'Invalid url param.'));
+    return;
+  }
+
+  try {
+    const tenant = await GetTenateById(Number(tenantId));
+
+    if (!tenant) {
+      next(createHttpError(400, 'Tenant does not exist.'));
+      return;
+    }
+
+    Logger.info('Tenant has been fetched');
+    res.json(tenant);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateTenate = async (
+  req: TenateRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<any> => {
+  // Validation
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(400).json({ errors: result.array() });
+  }
+
+  const { name, address } = req.body;
+  const tenantId = req.params.id;
+
+  if (isNaN(Number(tenantId))) {
+    next(createHttpError(400, 'Invalid url param.'));
+    return;
+  }
+
+  Logger.debug('Request for updating a tenant', req.body);
+
+  try {
+    await UpdateTenate(Number(tenantId), {
+      name,
+      address,
+    });
+
+    Logger.info('Tenant has been updated', { id: tenantId });
+
+    res.json({ id: Number(tenantId) });
+  } catch (err) {
+    next(err);
   }
 };
