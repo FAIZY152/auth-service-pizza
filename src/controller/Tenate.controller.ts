@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { AddTenate } from '../services/Tenate.service';
+import { AddTenate, GetTenates } from '../services/Tenate.service';
 import { TenateRequest } from '../types';
 import Logger from '../config/Logger';
 import { validationResult } from 'express-validator';
@@ -34,6 +34,21 @@ export const createTenate = async (
     });
   } catch (error) {
     Logger.error('Error creating Tenate', error);
+    next(error);
+  }
+};
+
+export const getTenates = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<any> => {
+  try {
+    // Assuming you have a service to fetch all tenates
+    const tenates = await GetTenates(); // Replace with actual service call
+    res.status(200).json(tenates);
+  } catch (error) {
+    Logger.error('Error fetching Tenates', error);
     next(error);
   }
 };

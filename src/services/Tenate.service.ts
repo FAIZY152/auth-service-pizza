@@ -9,6 +9,15 @@ export const AddTenate = async (tenateData: ITenate) => {
     await tenateRepo.save(tenant);
     return tenant;
   } catch (error) {
-    console.error('Error adding tenant:', error);
+    throw new Error('Error Creating tenant: ' + error.message);
+  }
+};
+
+export const GetTenates = async () => {
+  try {
+    const tenateRepo = AppDataSource.getRepository(Tenant);
+    return await tenateRepo.find();
+  } catch (error) {
+    throw new Error('Error fetching tenants: ' + error.message);
   }
 };
