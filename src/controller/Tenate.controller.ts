@@ -22,7 +22,7 @@ export const createTenate = async (
     Logger.info('Tenate created successfully', {
       tenateId: tenate.id,
     });
-    res.json({
+    res.status(201).json({
       message: 'Tenate created successfully',
       id: tenate.id,
     });
