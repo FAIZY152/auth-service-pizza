@@ -165,7 +165,6 @@ export const GetProfile = async (
   next: NextFunction,
 ) => {
   try {
-    console.log('User Authenticated: ', req.auth);
     const user = await FindById(Number(req.auth?.sub));
     res.json({ ...user, password: undefined });
   } catch (error) {

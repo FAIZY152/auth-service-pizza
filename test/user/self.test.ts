@@ -5,6 +5,8 @@ import bcrypt from 'bcrypt';
 
 import { Roles } from '../../src/constants';
 import createJWKSMock from 'mock-jwks';
+import { User } from '../../src/entity/User';
+import app from '../../src/App'; // Make sure this matches your actual file name
 
 describe('GET /auth/self', () => {
   let connection: DataSource;
@@ -32,43 +34,37 @@ describe('GET /auth/self', () => {
   });
 
   describe('Given all fields ', () => {
-    // it('should return the 200 status code', async () => {
-    //   const accessToken = jwks.token({
-    //     sub: '1',
-    //     role: Roles.CUSTOMER,
-    //   });
-    //   const response = await request(app)
-    //     .get('/auth/self')
-    //     .set('Cookie', [`accessToken=${accessToken}`])
-    //     .send();
-    //   expect(response.statusCode).toBe(200);
-    // });
-    // it('should return the user data', async () => {
-    //   // Register user
-    //   const userData = {
-    //     firstName: 'Muhammad',
-    //     lastName: 'Ali',
-    //     email: 'ali@gmail.com',
-    //     password: 'password',
-    //   };
-    //   const userRepository = connection.getRepository(User);
-    //   const data = await userRepository.save({
-    //     ...userData,
-    //     role: Roles.CUSTOMER,
-    //   });
-    //   // Generate token
-    //   const accessToken = jwks.token({
-    //     sub: String(data.id),
-    //     role: data.role,
-    //   });
-    //   // Add token to cookie
-    //   const response = await request(app)
-    //     .get('/auth/self')
-    //     .set('Cookie', [`accessToken=${accessToken};`])
-    //     .send();
-    //   // Assert
-    //   // Check if user id matches with registered user
-    //   expect((response.body as Record<string, string>).id).toBe(data.id);
-    // });
+    it('should return the user data', async () => {
+      // Register user
+      const userData = {
+        firstName: 'Muhammad',
+        lastName: 'Ali',
+        email: 'ali@gmail.com',
+        password: await bcrypt.hash('password', 10),
+        role: Roles.CUSTOMER,
+      };
+      const userRepository = connection.getRepository(User);
+      const data = await userRepository.save(userData);
+
+      // Generate token
+      const accessToken = jwks.token({
+        sub: String(data.id),
+        role: data.role,
+      });
+
+      // Add token to cookie
+      const response = await request(app)
+        .get('/auth/self')
+        .set('Cookie', [`accessToken=${accessToken};`])
+        .send();
+
+      // Assert
+      expect(response.statusCode).toBe(200);
+      expect(response.body.id).toBe(data.id);
+      expect(response.body.email).toBe(data.email);
+      expect(response.body.firstName).toBe(data.firstName);
+      expect(response.body.lastName).toBe(data.lastName);
+      expect(response.body.role).toBe(data.role);
+    });
   });
 });
