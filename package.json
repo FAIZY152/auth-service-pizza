@@ -6,6 +6,7 @@
    "scripts": {
       "start": "ts-node src/index.ts",
       "dev": "cross-env NODE_ENV=dev nodemon --exec ts-node src/index.ts",
+      "build": "tsc",
       "fix": "prettier . --write",
       "format": "prettier . --check",
       "test": "jest --watch --runInBand",
