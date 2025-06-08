@@ -1,6 +1,7 @@
 import express, { Router } from 'express';
 import {
   createTenate,
+  deleteTenate,
   getTenateById,
   updateTenate,
 } from '../controller/Tenate.controller';
@@ -33,6 +34,10 @@ tenateRouter.get(
   getTenateById,
 );
 
-
-tenateRouter.delete('/delete-tenate/:id', isAuthenticate, canAccess([Roles.ADMIN]),deleteTenate);
+tenateRouter.delete(
+  '/delete-tenate/:id',
+  isAuthenticate,
+  canAccess([Roles.ADMIN]),
+  deleteTenate,
+);
 export default tenateRouter;
