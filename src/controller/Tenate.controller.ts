@@ -2,13 +2,14 @@ import { Request, Response, NextFunction } from 'express';
 import {
   AddTenate,
   DeleteT,
+  getAll,
   GetById,
   GetTenates,
   Update,
 } from '../services/Tenate.service';
-import { TenateRequest } from '../types';
+import { TenantQueryParams, TenateRequest } from '../types';
 import Logger from '../config/Logger';
-import { validationResult } from 'express-validator';
+import { matchedData, validationResult } from 'express-validator';
 import createHttpError from 'http-errors';
 
 export const createTenate = async (
@@ -49,14 +50,23 @@ export const getTenates = async (
   req: Request,
   res: Response,
   next: NextFunction,
-): Promise<any> => {
+) => {
+  const validatedQuery = matchedData(req, { onlyValidData: true });
+
   try {
-    // Assuming you have a service to fetch all tenates
-    const tenates = await GetTenates(); // Replace with actual service call
-    res.status(200).json(tenates);
-  } catch (error) {
-    Logger.error('Error fetching Tenates', error);
-    next(error);
+    const [tenants, count] = await getAll(validatedQuery as TenantQueryParams);
+
+    Logger.info('All tenant have been fetched');
+    res.json({
+      currentPage: validatedQuery.currentPage as number,
+      perPage: validatedQuery.perPage as number,
+      total: count,
+      data: tenants,
+    });
+
+    res.json(tenants);
+  } catch (err) {
+    next(err);
   }
 };
 

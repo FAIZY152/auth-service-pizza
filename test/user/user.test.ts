@@ -73,6 +73,7 @@ describe('POST /users', () => {
         lastName: 'Ali',
         email: 'ali@gmail.com',
         password: 'password',
+        tenateId: '1',
       };
       const userRepository = connection.getRepository(User);
       const data = await userRepository.save({
@@ -97,6 +98,36 @@ describe('POST /users', () => {
       );
     });
 
+    it('should be Manager Role of user', async () => {
+      // Register user
+      const userData = {
+        firstName: 'Muhammad',
+        lastName: 'Ali',
+        email: 'ali@gmail.com',
+        password: 'password',
+        tenateId: '1',
+      };
+
+      const userRepository = connection.getRepository(User);
+      const data = await userRepository.save({
+        ...userData,
+        role: Roles.MANAGER,
+      });
+
+      // Generate token
+      const accessToken = jwks.token({
+        sub: String(data.id),
+        role: data.role,
+      });
+      const response = await request(app)
+        .get('/auth/self')
+        .set('Cookie', [`accessToken=${accessToken};`])
+        .send();
+
+      const user = response.body as Record<string, string>;
+      expect(user).toHaveProperty('role', Roles.MANAGER);
+    });
+
     it('should return 401 status code if token does not exists', async () => {
       // Register user
       const userData = {
@@ -104,6 +135,7 @@ describe('POST /users', () => {
         lastName: 'Ali',
         email: 'ali@gmail.com',
         password: 'password',
+        tenateId: '1',
       };
       const userRepository = connection.getRepository(User);
       await userRepository.save({

@@ -1,6 +1,6 @@
 import { AppDataSource } from '../config/data-source';
 import { Tenant } from '../entity/Tenate';
-import { ITenate } from '../types';
+import { ITenate, TenantQueryParams } from '../types';
 
 export const AddTenate = async (tenateData: ITenate) => {
   try {
@@ -49,4 +49,24 @@ export const DeleteT = async (id: number) => {
   } catch (error) {
     throw new Error('Error deleting tenant: ' + error.message);
   }
+};
+
+export const getAll = async (validatedQuery: TenantQueryParams) => {
+  const tenateRepo = AppDataSource.getRepository(Tenant);
+
+  const queryBuilder = tenateRepo.createQueryBuilder('tenant');
+
+  if (validatedQuery.q) {
+    const searchTerm = `%${validatedQuery.q}%`;
+    queryBuilder.where("CONCAT(tenant.name, ' ', tenant.address) ILike :q", {
+      q: searchTerm,
+    });
+  }
+
+  const result = await queryBuilder
+    .skip((validatedQuery.currentPage - 1) * validatedQuery.perPage)
+    .take(validatedQuery.perPage)
+    .orderBy('tenant.id', 'DESC')
+    .getManyAndCount();
+  return result;
 };

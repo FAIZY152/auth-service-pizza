@@ -32,3 +32,9 @@ export interface ITenate {
 export interface TenateRequest extends Request {
   body: ITenate;
 }
+
+export interface TenantQueryParams {
+  q: string;
+  perPage: number;
+  currentPage: number;
+}
