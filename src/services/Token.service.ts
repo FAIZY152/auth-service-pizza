@@ -55,13 +55,3 @@ export async function persistRefreshToken(
 
   return newRefreshToken;
 }
-
-// /**
-//  * Deletes a refresh token by ID
-//  */
-// export async function deleteRefreshToken(
-//   refreshTokenRepository: Repository<RefreshToken>,
-//   tokenId: number,
-// ) {
-//   return await refreshTokenRepository.delete({ id: tokenId });
-// }

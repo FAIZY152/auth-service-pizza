@@ -13,15 +13,6 @@ export const AddTenate = async (tenateData: ITenate) => {
   }
 };
 
-export const GetTenates = async () => {
-  try {
-    const tenateRepo = AppDataSource.getRepository(Tenant);
-    return await tenateRepo.find();
-  } catch (error) {
-    throw new Error('Error fetching tenants: ' + error.message);
-  }
-};
-
 export const GetById = async (id: number) => {
   try {
     const tenateRepo = AppDataSource.getRepository(Tenant);
