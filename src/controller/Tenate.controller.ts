@@ -4,7 +4,6 @@ import {
   DeleteT,
   getAll,
   GetById,
-  GetTenates,
   Update,
 } from '../services/Tenate.service';
 import { TenantQueryParams, TenateRequest } from '../types';

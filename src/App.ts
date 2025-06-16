@@ -6,6 +6,7 @@ import userRouter from './routes/Auth.routes';
 import cookieParser from 'cookie-parser';
 import tenateRouter from './routes/Tenate.routes';
 import router from './routes/User.routes';
+import cors from 'cors';
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.static('public')); // Serve static files from the 'public'
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors());
 
 // Routes
 app.get('/', (req, res, next) => {
