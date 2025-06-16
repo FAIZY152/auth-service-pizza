@@ -8,6 +8,10 @@ lerna-debug.log*
 .pnpm-debug.log*
 
 
+./keys
+\keys\private.pem
+
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
@@ -80,7 +84,8 @@ web_modules/
 .env.test
 .env.prod
 .env.dev
- keys
+./keys
+\keys\private.pem
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
