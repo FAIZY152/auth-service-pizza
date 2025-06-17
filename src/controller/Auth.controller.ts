@@ -36,7 +36,7 @@ export const Register = async (
   if (!result.isEmpty()) {
     return res.status(400).json({ errors: result.array() });
   }
-  const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email, password, role } = req.body;
   Logger.debug('New request to register a user', {
     firstName,
     lastName,
@@ -49,7 +49,7 @@ export const Register = async (
       lastName,
       email,
       password,
-      role: Roles.CUSTOMER,
+      role: role || Roles.CUSTOMER,
     });
 
     const payload: JwtPayload = {
