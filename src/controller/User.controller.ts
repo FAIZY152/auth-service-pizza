@@ -8,7 +8,6 @@ import { UserQueryParams, UpdateUserRequest } from '../types/index'; // adjust i
 import { AdminUserService } from '../services/Admin.service';
 // adjust based on your project structure
 
-
 export const CreateUser = async (req: Request, res: Response) => {
   try {
     // Logic to create a user
@@ -20,7 +19,7 @@ export const CreateUser = async (req: Request, res: Response) => {
       password: '******',
     });
 
-    const user = await RegisterService({
+    const user = await AdminUserService.create({
       firstName,
       lastName,
       email,
@@ -35,7 +34,6 @@ export const CreateUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 
 export async function getOne(req: Request, res: Response, next: NextFunction) {
   const userId = req.params.id;
@@ -59,10 +57,6 @@ export async function getOne(req: Request, res: Response, next: NextFunction) {
     next(err);
   }
 }
-
-
-
-
 
 // export async function update(
 //   req: UpdateUserRequest,
@@ -119,7 +113,6 @@ export async function getOne(req: Request, res: Response, next: NextFunction) {
 //     next(err);
 //   }
 // }
-
 
 // export async function destroy(req: Request, res: Response, next: NextFunction) {
 //   const userId = req.params.id;
