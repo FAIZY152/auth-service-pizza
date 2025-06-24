@@ -98,7 +98,7 @@ export async function getOne(req: Request, res: Response, next: NextFunction) {
 //   const validatedQuery = matchedData(req, { onlyValidData: true });
 
 //   try {
-//     const [users, count] = await userService.getAll(
+//     const [users, count] = await AdminUserService.getAll(
 //       validatedQuery as UserQueryParams,
 //     );
 
@@ -112,7 +112,18 @@ export async function getOne(req: Request, res: Response, next: NextFunction) {
 //   } catch (err) {
 //     next(err);
 //   }
-// }
+// } => write by Rakesh sir but dont know how its work
+
+export async function getAll(req: Request, res: Response, next: NextFunction) {
+  try {
+    const users = await AdminUserService.findAll();
+    res.json({
+      users,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 
 // export async function destroy(req: Request, res: Response, next: NextFunction) {
 //   const userId = req.params.id;

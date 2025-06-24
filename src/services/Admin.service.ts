@@ -98,6 +98,9 @@ async function getAll(validatedQuery: UserQueryParams) {
   return result;
 }
 
+export async function findAll() {
+  return await AppDataSource.getRepository(User).find();
+}
 async function deleteById(userId: number) {
   return await AppDataSource.getRepository(User).delete(userId);
 }
@@ -107,6 +110,7 @@ export const AdminUserService = {
   create,
   findByEmailWithPassword,
   findById,
+  findAll,
   update,
   getAll,
   deleteById,
