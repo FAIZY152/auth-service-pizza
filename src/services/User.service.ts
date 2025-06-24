@@ -3,6 +3,8 @@ import { AppDataSource } from '../config/data-source';
 import { User } from '../entity/User';
 import bcrypt from 'bcrypt';
 
+import { Repository, Brackets } from 'typeorm';
+
 export const RegisterService = async ({
   firstName,
   lastName,
@@ -59,7 +61,13 @@ export const LoginService = async (email: string, password: string) => {
 
 export const FindById = async (id: number) => {
   const userRepository = AppDataSource.getRepository(User);
-  const user = await userRepository.findOneBy({ id });
+  const user = await userRepository.findOne({
+    where: { id },
+    relations: {
+      tenant: true,
+    },
+    // Assuming you want to load refresh tokens as well
+  });
   if (!user) {
     const err = createHttpError(404, 'User not found');
     throw err;
@@ -86,3 +94,7 @@ export const deleteRefreshToken = async (tokenId: number) => {
     throw err;
   }
 };
+
+// crud of User = managers
+
+// adjust path as needed

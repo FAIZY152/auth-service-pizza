@@ -49,7 +49,7 @@ export const Register = async (
       lastName,
       email,
       password,
-      role: role || Roles.CUSTOMER,
+      role: Roles.CUSTOMER,
     });
 
     const payload: JwtPayload = {
