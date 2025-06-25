@@ -11,7 +11,7 @@ import { AdminUserService } from '../services/Admin.service';
 export const CreateUser = async (req: Request, res: Response) => {
   try {
     // Logic to create a user
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, role } = req.body;
     Logger.debug('New request to register a user', {
       firstName,
       lastName,
@@ -24,14 +24,14 @@ export const CreateUser = async (req: Request, res: Response) => {
       lastName,
       email,
       password,
-      role: Roles.MANAGER,
+      role: role || Roles.CUSTOMER, // Default to CUSTOMER role if not provided
     });
 
     res.status(201).json({
       id: user.id,
     });
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: error.message });
   }
 };
 
