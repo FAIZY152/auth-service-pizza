@@ -102,12 +102,29 @@ export async function findAll(validateQuery: UserQueryParams) {
   // for paginaton in type orm we need to crate query builder
   const queryBuilder =
     AppDataSource.getRepository(User).createQueryBuilder('user');
+
+  if (validateQuery.q) {
+    const searchTerm = `%${validateQuery.q}%`;
+    queryBuilder.where(
+      new Brackets((qb) => {
+        qb.where("CONCAT(user.firstName, ' ', user.lastName) ILike :q", {
+          q: searchTerm,
+        }).orWhere('user.email ILike :q', { q: searchTerm });
+      }),
+    );
+  }
+
+  if (validateQuery.role) {
+    queryBuilder.andWhere('user.role = :role', {
+      role: validateQuery.role,
+    });
+  }
+
   const result = await queryBuilder
     .skip((validateQuery.currentPage - 1) * validateQuery.perPage)
     .take(validateQuery.perPage)
     .getManyAndCount();
 
-  console.log('result', result);
   return result;
   // return await AppDataSource.getRepository(User).find();
 }

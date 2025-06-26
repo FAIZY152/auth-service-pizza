@@ -125,7 +125,7 @@ export async function getAll(req: Request, res: Response, next: NextFunction) {
     console.log('users', users);
 
     res.json({
-      data: users[0],
+      data: users[0], 
       total: users[1],
       currentPage: validateQuery.currentPage as number,
       perPage: validateQuery.perPage as number,
