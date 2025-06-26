@@ -67,12 +67,13 @@ async function update(
   }
 }
 
-// async function getAll(validatedQuery: UserQueryParams) {
+// export async function findAll(validateQuery: UserQueryParams) {
+//   // for paginaton in type orm we need to crate query builder
 //   const queryBuilder =
 //     AppDataSource.getRepository(User).createQueryBuilder('user');
 
-//   if (validatedQuery.q) {
-//     const searchTerm = `%${validatedQuery.q}%`;
+//   if (validateQuery.q) {
+//     const searchTerm = `%${validateQuery.q}%`;
 //     queryBuilder.where(
 //       new Brackets((qb) => {
 //         qb.where("CONCAT(user.firstName, ' ', user.lastName) ILike :q", {
@@ -82,51 +83,33 @@ async function update(
 //     );
 //   }
 
-//   if (validatedQuery.role) {
+//   if (validateQuery.role) {
 //     queryBuilder.andWhere('user.role = :role', {
-//       role: validatedQuery.role,
+//       role: validateQuery.role,
 //     });
 //   }
 
 //   const result = await queryBuilder
-//     .leftJoinAndSelect('user.tenant', 'tenant')
-//     .skip((validatedQuery.currentPage - 1) * validatedQuery.perPage)
-//     .take(validatedQuery.perPage)
-//     .orderBy('user.id', 'DESC')
+//     .skip((validateQuery.currentPage - 1) * validateQuery.perPage)
+//     .take(validateQuery.perPage)
 //     .getManyAndCount();
 
 //   return result;
+//   // return await AppDataSource.getRepository(User).find();
 // }
 
 export async function findAll(validateQuery: UserQueryParams) {
-  // for paginaton in type orm we need to crate query builder
+  const { q, role, perPage = 6, currentPage = 1 } = validateQuery;
   const queryBuilder =
     AppDataSource.getRepository(User).createQueryBuilder('user');
 
-  if (validateQuery.q) {
-    const searchTerm = `%${validateQuery.q}%`;
-    queryBuilder.where(
-      new Brackets((qb) => {
-        qb.where("CONCAT(user.firstName, ' ', user.lastName) ILike :q", {
-          q: searchTerm,
-        }).orWhere('user.email ILike :q', { q: searchTerm });
-      }),
-    );
-  }
-
-  if (validateQuery.role) {
-    queryBuilder.andWhere('user.role = :role', {
-      role: validateQuery.role,
-    });
-  }
-
+  // pagination
   const result = await queryBuilder
-    .skip((validateQuery.currentPage - 1) * validateQuery.perPage)
-    .take(validateQuery.perPage)
+    .skip((currentPage - 1) * perPage)
+    .take(perPage)
     .getManyAndCount();
 
   return result;
-  // return await AppDataSource.getRepository(User).find();
 }
 async function deleteById(userId: number) {
   return await AppDataSource.getRepository(User).delete(userId);
