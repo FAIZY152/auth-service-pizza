@@ -67,38 +67,39 @@ async function update(
   }
 }
 
-async function getAll(validatedQuery: UserQueryParams) {
-  const queryBuilder =
-    AppDataSource.getRepository(User).createQueryBuilder('user');
+// async function getAll(validatedQuery: UserQueryParams) {
+//   const queryBuilder =
+//     AppDataSource.getRepository(User).createQueryBuilder('user');
 
-  if (validatedQuery.q) {
-    const searchTerm = `%${validatedQuery.q}%`;
-    queryBuilder.where(
-      new Brackets((qb) => {
-        qb.where("CONCAT(user.firstName, ' ', user.lastName) ILike :q", {
-          q: searchTerm,
-        }).orWhere('user.email ILike :q', { q: searchTerm });
-      }),
-    );
-  }
+//   if (validatedQuery.q) {
+//     const searchTerm = `%${validatedQuery.q}%`;
+//     queryBuilder.where(
+//       new Brackets((qb) => {
+//         qb.where("CONCAT(user.firstName, ' ', user.lastName) ILike :q", {
+//           q: searchTerm,
+//         }).orWhere('user.email ILike :q', { q: searchTerm });
+//       }),
+//     );
+//   }
 
-  if (validatedQuery.role) {
-    queryBuilder.andWhere('user.role = :role', {
-      role: validatedQuery.role,
-    });
-  }
+//   if (validatedQuery.role) {
+//     queryBuilder.andWhere('user.role = :role', {
+//       role: validatedQuery.role,
+//     });
+//   }
 
-  const result = await queryBuilder
-    .leftJoinAndSelect('user.tenant', 'tenant')
-    .skip((validatedQuery.currentPage - 1) * validatedQuery.perPage)
-    .take(validatedQuery.perPage)
-    .orderBy('user.id', 'DESC')
-    .getManyAndCount();
+//   const result = await queryBuilder
+//     .leftJoinAndSelect('user.tenant', 'tenant')
+//     .skip((validatedQuery.currentPage - 1) * validatedQuery.perPage)
+//     .take(validatedQuery.perPage)
+//     .orderBy('user.id', 'DESC')
+//     .getManyAndCount();
 
-  return result;
-}
+//   return result;
+// }
 
 export async function findAll() {
+  
   return await AppDataSource.getRepository(User).find();
 }
 async function deleteById(userId: number) {
@@ -112,6 +113,5 @@ export const AdminUserService = {
   findById,
   findAll,
   update,
-  getAll,
   deleteById,
 };

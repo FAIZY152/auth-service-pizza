@@ -116,6 +116,9 @@ export async function getOne(req: Request, res: Response, next: NextFunction) {
 
 export async function getAll(req: Request, res: Response, next: NextFunction) {
   try {
+    const validateQuery = matchedData(req, { onlyValidData: true });
+    console.log('pagination', validateQuery);
+
     const users = await AdminUserService.findAll();
     res.json({
       users,
