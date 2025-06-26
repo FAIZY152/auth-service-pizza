@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import tenateRouter from './routes/Tenate.routes';
 import router from './routes/User.routes';
 import cors from 'cors';
+import { globalErrorHandler } from './middleware/global-error-handler';
 
 const app = express();
 
@@ -35,20 +36,7 @@ app.use('/auth', userRouter);
 app.use('/tenants', tenateRouter);
 app.use('/user', router);
 
-// middleware
+//  error middle ware middleware
 
-app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
-  const statusCode = err.status || err.statusCode || 500;
-  res.status(statusCode).json({
-    errors: [
-      {
-        type: err.name,
-        msg: err.message,
-        path: '',
-        location: '',
-      },
-    ],
-  });
-});
-
+app.use(globalErrorHandler)
 export default app;
