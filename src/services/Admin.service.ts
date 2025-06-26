@@ -98,9 +98,18 @@ async function update(
 //   return result;
 // }
 
-export async function findAll() {
-  
-  return await AppDataSource.getRepository(User).find();
+export async function findAll(validateQuery: UserQueryParams) {
+  // for paginaton in type orm we need to crate query builder
+  const queryBuilder =
+    AppDataSource.getRepository(User).createQueryBuilder('user');
+  const result = await queryBuilder
+    .skip((validateQuery.currentPage - 1) * validateQuery.perPage)
+    .take(validateQuery.perPage)
+    .getManyAndCount();
+
+  console.log('result', result);
+  return result;
+  // return await AppDataSource.getRepository(User).find();
 }
 async function deleteById(userId: number) {
   return await AppDataSource.getRepository(User).delete(userId);

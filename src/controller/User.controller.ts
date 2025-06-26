@@ -119,10 +119,18 @@ export async function getAll(req: Request, res: Response, next: NextFunction) {
     const validateQuery = matchedData(req, { onlyValidData: true });
     console.log('pagination', validateQuery);
 
-    const users = await AdminUserService.findAll();
+    const users = await AdminUserService.findAll(
+      validateQuery as UserQueryParams,
+    );
+    console.log('users', users);
+
     res.json({
-      users,
+      data: users[0],
+      total: users[1],
+      currentPage: validateQuery.currentPage as number,
+      perPage: validateQuery.perPage as number,
     });
+    Logger.info('All users have been fetched');
   } catch (error) {
     next(error);
   }
