@@ -15,14 +15,14 @@ const tenateRouter = express.Router();
 tenateRouter.post(
   '/',
   isAuthenticate,
-  canAccess([Roles.ADMIN]),
+  canAccess([Roles.MANAGER || Roles.ADMIN]),
   validateCreateTenate,
   createTenate,
 );
 tenateRouter.patch(
   '/update/:id',
   isAuthenticate,
-  canAccess([Roles.ADMIN]),
+  canAccess([Roles.MANAGER || Roles.ADMIN]),
   validateCreateTenate,
   updateTenate,
 );
@@ -30,14 +30,14 @@ tenateRouter.patch(
 tenateRouter.get(
   '/get-tenate/:id',
   isAuthenticate,
-  canAccess([Roles.ADMIN]),
+  canAccess([Roles.MANAGER || Roles.ADMIN]),
   getTenateById,
 );
 
 tenateRouter.delete(
   '/delete-tenate/:id',
   isAuthenticate,
-  canAccess([Roles.ADMIN]),
+  canAccess([Roles.MANAGER || Roles.ADMIN]),
   deleteTenate,
 );
 export default tenateRouter;
