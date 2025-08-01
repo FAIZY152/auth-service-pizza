@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -17,8 +18,8 @@ export class RefreshToken {
   expiresAt: Date;
 
   @ManyToOne(() => User)
+  @JoinColumn({ name: 'userId' })
   user: User;
-  // userId
 
   @UpdateDateColumn()
   updatedAt: number;

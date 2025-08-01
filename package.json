@@ -10,9 +10,12 @@
       "fix": "prettier . --write",
       "format": "prettier . --check",
       "test": "jest --no-cache --coverage --all --runInBand",
-      "migration:generate": "typeorm-ts-node-commonjs migration:generate --esm -d src/config/data-source.ts",
+       "migration:generate": "typeorm-ts-node-commonjs migration:generate --esm -d src/config/data-source.ts",
+
       "migration:run": "typeorm-ts-node-commonjs migration:run -d src/config/data-source.ts",
-      "migration:create": "typeorm-ts-node-commonjs migration:create"
+      "migration:create": "typeorm-ts-node-commonjs migration:create",
+      "migration:revert":""
+
    },
    "keywords": [],
    "author": "",

@@ -15,7 +15,6 @@ import checkRefreshToken from '../middleware/check-refresh-token';
 const userRouter = express.Router();
 
 userRouter.post('/register', registerValidator, Register);
-
 userRouter.post('/login', loginValidator, Login);
 userRouter.get('/self', isAuthenticate, GetProfile);
 userRouter.post('/refresh-token', checkRefreshToken, Refresh);
