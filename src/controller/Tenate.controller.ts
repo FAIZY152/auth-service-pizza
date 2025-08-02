@@ -3,6 +3,7 @@ import {
   AddTenate,
   DeleteT,
   getAll,
+  GetAllTenates,
   GetById,
   Update,
 } from '../services/Tenate.service';
@@ -45,29 +46,29 @@ export const createTenate = async (
   }
 };
 
-export const getTenates = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const validatedQuery = matchedData(req, { onlyValidData: true });
+// export const getTenates = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ) => {
+//   const validatedQuery = matchedData(req, { onlyValidData: true });
 
-  try {
-    const [tenants, count] = await getAll(validatedQuery as TenantQueryParams);
+//   try {
+//     const [tenants, count] = await getAll(validatedQuery as TenantQueryParams);
 
-    Logger.info('All tenant have been fetched');
-    res.json({
-      currentPage: validatedQuery.currentPage as number,
-      perPage: validatedQuery.perPage as number,
-      total: count,
-      data: tenants,
-    });
+//     Logger.info('All tenant have been fetched');
+//     res.json({
+//       currentPage: validatedQuery.currentPage as number,
+//       perPage: validatedQuery.perPage as number,
+//       total: count,
+//       data: tenants,
+//     });
 
-    res.json(tenants);
-  } catch (err) {
-    next(err);
-  }
-};
+//     res.json(tenants);
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
 export const getTenateById = async (
   req: Request,
@@ -89,6 +90,23 @@ export const getTenateById = async (
       return;
     }
 
+    Logger.info('Tenant has been fetched');
+    res.json(tenant);
+  } catch (err) {
+    next(err);
+  }
+};
+export const getTenates = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const tenant = await GetAllTenates();
+    if (!tenant) {
+      next(createHttpError(400, 'Tenant does not exist.'));
+      return;
+    }
     Logger.info('Tenant has been fetched');
     res.json(tenant);
   } catch (err) {

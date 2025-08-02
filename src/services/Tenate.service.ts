@@ -22,6 +22,15 @@ export const GetById = async (id: number) => {
   }
 };
 
+export const GetAllTenates = async () => {
+  try {
+    const tenantRepo = AppDataSource.getRepository(Tenant);
+    return await tenantRepo.find();
+  } catch (error) {
+    throw new Error('Error fetching all tenants: ' + error.message);
+  }
+};
+
 export const Update = async (id: number, tenateData: ITenate) => {
   try {
     const tenateRepo = AppDataSource.getRepository(Tenant);

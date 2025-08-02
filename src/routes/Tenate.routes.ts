@@ -33,6 +33,12 @@ tenateRouter.get(
   canAccess([Roles.MANAGER || Roles.ADMIN]),
   getTenateById,
 );
+tenateRouter.get(
+  '/get-tenate',
+  isAuthenticate,
+  canAccess([Roles.MANAGER || Roles.ADMIN]),
+  getTenateById,
+);
 
 tenateRouter.delete(
   '/delete-tenate/:id',
