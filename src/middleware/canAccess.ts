@@ -5,15 +5,12 @@ import createHttpError from 'http-errors';
 export const canAccess = (roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const _req = req as AuthRequest;
-    console.log('req', _req.auth);
+    const roleFromToken = _req.auth?.role;
 
-    const roleFromToken = _req.auth.role;
-
-    if (!roles.includes(roleFromToken)) {
-      const error = createHttpError(403, "You don't have enough permissions");
-      next(error);
-      return;
+    if (!roleFromToken || !roles.includes(roleFromToken)) {
+      return next(createHttpError(403, "You don't have enough permissions"));
     }
+
     next();
   };
 };

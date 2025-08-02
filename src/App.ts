@@ -18,8 +18,9 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: 'http://localhost:5173',
-    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
   }),
 );
 
@@ -38,5 +39,5 @@ app.use('/user', router);
 
 //  error middle ware middleware
 
-app.use(globalErrorHandler)
+app.use(globalErrorHandler);
 export default app;
