@@ -109,6 +109,8 @@ export async function findAll(validateQuery: UserQueryParams) {
     .take(perPage)
     .getManyAndCount();
 
+    console.log('result', result);
+    
   return result;
 }
 async function deleteById(userId: number) {

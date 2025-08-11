@@ -4,11 +4,20 @@ import { RegisterService } from '../services/User.service';
 import { Request, Response, NextFunction } from 'express';
 import createHttpError from 'http-errors';
 import { validationResult, matchedData } from 'express-validator';
-import { UserQueryParams, UpdateUserRequest } from '../types/index'; // adjust import paths as needed
+import { UserQueryParams, UpdateUserRequest, UserData } from '../types/index'; // adjust import paths as needed
 import { AdminUserService } from '../services/Admin.service';
+import { User } from '../entity/User';
+import { QueryBuilder } from 'typeorm';
+import { AppDataSource } from '../config/data-source';
 // adjust based on your project structure
 
-export const CreateUser = async (req: Request, res: Response) => {
+
+
+interface RequestBody extends Request {
+  body: User;
+}
+
+export const CreateUser = async (req: RequestBody, res: Response) => {
   try {
     // Logic to create a user
     const { firstName, lastName, email, password, role } = req.body;
@@ -17,6 +26,7 @@ export const CreateUser = async (req: Request, res: Response) => {
       lastName,
       email,
       password: '******',
+      tenantId: req.body.tenant.id,
     });
 
     const user = await AdminUserService.create({
@@ -24,7 +34,8 @@ export const CreateUser = async (req: Request, res: Response) => {
       lastName,
       email,
       password,
-      role: role || Roles.CUSTOMER, // Default to CUSTOMER role if not provided
+      role: role || Roles.CUSTOMER,
+      tenantId: req.body.tenant.id,
     });
 
     res.status(201).json({
@@ -117,17 +128,43 @@ export async function getOne(req: Request, res: Response, next: NextFunction) {
 export async function getAll(req: Request, res: Response, next: NextFunction) {
   try {
     const validateQuery = matchedData(req, { onlyValidData: true });
-    const users = await AdminUserService.findAll(
-      validateQuery as UserQueryParams,
-    );
-    res.json({
-      data: users[0],
-      total: users[1],
-      currentPage: validateQuery.currentPage as number,
-      perPage: validateQuery.perPage as number,
-    });
+const queryBuilder = AppDataSource.getRepository(User).createQueryBuilder('user');
+
+    // search
+    const search = validateQuery.q;
+
+    if (search) {
+      const searchTerm = `%${search}%`;
+      queryBuilder.where  ("CONCAT(user.firstName, ' ', user.lastName) ILike :q", {
+        q: searchTerm,  
+      }); 
+    }
+
+    // role search
+
+    const role = validateQuery.role;
+    if (role) {
+      queryBuilder.andWhere('user.role = :role', { role });
+    }
+      // pagination
+    const [users, count] = await queryBuilder.skip((validateQuery.currentPage - 1) * validateQuery.perPage).take(validateQuery.perPage).getManyAndCount();
+
+
+    
     Logger.info('All users have been fetched');
-  } catch (error) {
-    next(error);
-  }
+     return res.json({
+        currentPage: validateQuery.currentPage as number,
+        perPage: validateQuery.perPage as number,
+        total: count,
+        data: users,
+      });
+      console.log(queryBuilder.getSql());
+      
+      
+    } catch (err) {
+      next(err);
+    }
 }
+
+
+  
