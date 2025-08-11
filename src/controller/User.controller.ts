@@ -117,13 +117,9 @@ export async function getOne(req: Request, res: Response, next: NextFunction) {
 export async function getAll(req: Request, res: Response, next: NextFunction) {
   try {
     const validateQuery = matchedData(req, { onlyValidData: true });
-    console.log('pagination', validateQuery);
-
     const users = await AdminUserService.findAll(
       validateQuery as UserQueryParams,
     );
-    console.log('users', users);
-
     res.json({
       data: users[0],
       total: users[1],

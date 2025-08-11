@@ -14,7 +14,7 @@ export default checkSchema(
       customSanitizer: {
         options: (value) => {
           const number = Number(value);
-          return Number.isInteger(number) ? number : 6;
+          return Number.isInteger(number) ? number : 4;
         },
       },
     },
