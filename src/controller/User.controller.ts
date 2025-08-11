@@ -125,17 +125,28 @@ export async function getOne(req: Request, res: Response, next: NextFunction) {
 //   }
 // } => write by Rakesh sir but dont know how its work
 
-export async function getAll(req: Request, res: Response, next: NextFunction) {
+export async function getAll(req: Request, res: Response, next: NextFunction):Promise<any> {
   try {
     const validateQuery = matchedData(req, { onlyValidData: true });
 const queryBuilder = AppDataSource.getRepository(User).createQueryBuilder('user');
 
+
+const { email , firstName , lastName } = validateQuery;
+if (email) {
+  queryBuilder.where('user.email = :email', { email });
+}
+if (firstName) {
+  queryBuilder.andWhere('user.firstName = :firstName', { firstName });
+}
+if (lastName) {
+  queryBuilder.andWhere('user.lastName = :lastName', { lastName });
+}
     // search
     const search = validateQuery.q;
 
     if (search) {
       const searchTerm = `%${search}%`;
-      queryBuilder.where  ("CONCAT(user.firstName, ' ', user.lastName) ILike :q", {
+      queryBuilder.where ("CONCAT(user.firstName, ' ', user.lastName) ILike :q", {
         q: searchTerm,  
       }); 
     }
@@ -152,13 +163,13 @@ const queryBuilder = AppDataSource.getRepository(User).createQueryBuilder('user'
 
     
     Logger.info('All users have been fetched');
+    console.log(queryBuilder.getSql());
      return res.json({
         currentPage: validateQuery.currentPage as number,
         perPage: validateQuery.perPage as number,
         total: count,
         data: users,
       });
-      console.log(queryBuilder.getSql());
       
       
     } catch (err) {
