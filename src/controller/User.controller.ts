@@ -158,7 +158,10 @@ if (lastName) {
       queryBuilder.andWhere('user.role = :role', { role });
     }
       // pagination
-    const [users, count] = await queryBuilder.skip((validateQuery.currentPage - 1) * validateQuery.perPage).take(validateQuery.perPage).getManyAndCount();
+    const [users, count] = await queryBuilder.leftJoinAndSelect('user.tenant', 'tenant')
+    .skip((validateQuery.currentPage - 1) * validateQuery.perPage)
+    .take(validateQuery.perPage)
+    .getManyAndCount();
 
 
     
