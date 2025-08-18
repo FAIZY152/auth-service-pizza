@@ -89,7 +89,6 @@ export const getTenateById = async (
       next(createHttpError(400, 'Tenant does not exist.'));
       return;
     }
-
     Logger.info('Tenant has been fetched');
     res.json(tenant);
   } catch (err) {
