@@ -4,6 +4,7 @@ import { User } from '../entity/User';
 import bcrypt from 'bcrypt';
 
 import { Repository, Brackets } from 'typeorm';
+import { findByEmailWithPassword } from './Admin.service';
 
 export const RegisterService = async ({
   firstName,
@@ -39,8 +40,7 @@ export const RegisterService = async ({
 
 export const LoginService = async (email: string, password: string) => {
   try {
-    const userRepository = AppDataSource.getRepository(User);
-    const user = await userRepository.findOneBy({ email });
+    const user = await findByEmailWithPassword(email);
 
     if (!user) {
       const err = createHttpError(400, 'Invalid credentials');

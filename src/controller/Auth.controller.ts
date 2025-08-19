@@ -119,10 +119,11 @@ export const Login = async (
     const payload: JwtPayload = {
       sub: String(user.id),
       role: user.role,
-      firstName: user.firstName,
-      lastName: user.lastName,
       email: user.email,
+      tenantId: user.tenant,
     };
+
+    console.log('user', user);
 
     const accessToken = await generateAccessToken(payload);
 

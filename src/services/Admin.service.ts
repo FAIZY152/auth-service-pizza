@@ -36,7 +36,7 @@ async function create({
   }
 }
 
-async function findByEmailWithPassword(email: string) {
+export async function findByEmailWithPassword(email: string) {
   return await AppDataSource.getRepository(User).findOne({
     where: { email },
     relations: { tenant: true },
@@ -109,8 +109,8 @@ export async function findAll(validateQuery: UserQueryParams) {
     .take(perPage)
     .getManyAndCount();
 
-    console.log('result', result);
-    
+  console.log('result', result);
+
   return result;
 }
 async function deleteById(userId: number) {
