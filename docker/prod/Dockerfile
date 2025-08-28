@@ -33,6 +33,7 @@ COPY package*.json ./
 
 # Install only production dependencies
 RUN npm ci --only=production --ignore-scripts --omit=dev
+
 # Copy only the necessary files from the builder stage
 COPY --from=builder /app/dist ./
 

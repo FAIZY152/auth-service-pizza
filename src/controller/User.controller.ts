@@ -11,13 +11,14 @@ import { QueryBuilder } from 'typeorm';
 import { AppDataSource } from '../config/data-source';
 // adjust based on your project structure
 
-
-
 interface RequestBody extends Request {
   body: User;
 }
 
-export const CreateUser = async (req: RequestBody, res: Response) => {
+export const CreateUser = async (
+  req: RequestBody,
+  res: Response,
+): Promise<any> => {
   try {
     // Logic to create a user
     const { firstName, lastName, email, password, role } = req.body;
@@ -26,7 +27,7 @@ export const CreateUser = async (req: RequestBody, res: Response) => {
       lastName,
       email,
       password: '******',
-      tenantId: req.body.tenant.id,
+      tenantId: req.body.tenant?.id,
     });
 
     const user = await AdminUserService.create({
@@ -35,14 +36,15 @@ export const CreateUser = async (req: RequestBody, res: Response) => {
       email,
       password,
       role: role || Roles.CUSTOMER,
-      tenantId: req.body.tenant.id,
+      tenantId: req.body.tenant?.id,
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       user: user,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.log(error);
+    return res.status(500).json({ error: error.message });
   }
 };
 
@@ -125,30 +127,37 @@ export async function getOne(req: Request, res: Response, next: NextFunction) {
 //   }
 // } => write by Rakesh sir but dont know how its work
 
-export async function getAll(req: Request, res: Response, next: NextFunction):Promise<any> {
+export async function getAll(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<any> {
   try {
     const validateQuery = matchedData(req, { onlyValidData: true });
-const queryBuilder = AppDataSource.getRepository(User).createQueryBuilder('user');
+    const queryBuilder =
+      AppDataSource.getRepository(User).createQueryBuilder('user');
 
-
-const { email , firstName , lastName } = validateQuery;
-if (email) {
-  queryBuilder.where('user.email = :email', { email });
-}
-if (firstName) {
-  queryBuilder.andWhere('user.firstName = :firstName', { firstName });
-}
-if (lastName) {
-  queryBuilder.andWhere('user.lastName = :lastName', { lastName });
-}
+    const { email, firstName, lastName } = validateQuery;
+    if (email) {
+      queryBuilder.where('user.email = :email', { email });
+    }
+    if (firstName) {
+      queryBuilder.andWhere('user.firstName = :firstName', { firstName });
+    }
+    if (lastName) {
+      queryBuilder.andWhere('user.lastName = :lastName', { lastName });
+    }
     // search
     const search = validateQuery.q;
 
     if (search) {
       const searchTerm = `%${search}%`;
-      queryBuilder.where ("CONCAT(user.firstName, ' ', user.lastName) ILike :q", {
-        q: searchTerm,  
-      }); 
+      queryBuilder.where(
+        "CONCAT(user.firstName, ' ', user.lastName) ILike :q",
+        {
+          q: searchTerm,
+        },
+      );
     }
 
     // role search
@@ -157,28 +166,22 @@ if (lastName) {
     if (role) {
       queryBuilder.andWhere('user.role = :role', { role });
     }
-      // pagination
-    const [users, count] = await queryBuilder.leftJoinAndSelect('user.tenant', 'tenant')
-    .skip((validateQuery.currentPage - 1) * validateQuery.perPage)
-    .take(validateQuery.perPage)
-    .getManyAndCount();
+    // pagination
+    const [users, count] = await queryBuilder
+      .leftJoinAndSelect('user.tenant', 'tenant')
+      .skip((validateQuery.currentPage - 1) * validateQuery.perPage)
+      .take(validateQuery.perPage)
+      .getManyAndCount();
 
-
-    
     Logger.info('All users have been fetched');
     console.log(queryBuilder.getSql());
-     return res.json({
-        currentPage: validateQuery.currentPage as number,
-        perPage: validateQuery.perPage as number,
-        total: count,
-        data: users,
-      });
-      
-      
-    } catch (err) {
-      next(err);
-    }
+    return res.json({
+      currentPage: validateQuery.currentPage as number,
+      perPage: validateQuery.perPage as number,
+      total: count,
+      data: users,
+    });
+  } catch (err) {
+    next(err);
+  }
 }
-
-
-  

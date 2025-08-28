@@ -7,8 +7,24 @@ import listUserPage from '../validators/list-userPage';
 
 const router = express.Router();
 
-router.post('/create', isAuthenticate, canAccess([Roles.ADMIN]), CreateUser);
-router.get('/:id', isAuthenticate, canAccess([Roles.ADMIN]), getOne);
-router.get('/', isAuthenticate, listUserPage, canAccess([Roles.ADMIN]), getAll);
+router.post(
+  '/create',
+  isAuthenticate,
+  canAccess([Roles.MANAGER, Roles.ADMIN]),
+  CreateUser,
+);
+router.get(
+  '/:id',
+  isAuthenticate,
+  canAccess([Roles.MANAGER, Roles.ADMIN]),
+  getOne,
+);
+router.get(
+  '/',
+  isAuthenticate,
+  listUserPage,
+  canAccess([Roles.MANAGER, Roles.ADMIN]),
+  getAll,
+);
 
 export default router;
